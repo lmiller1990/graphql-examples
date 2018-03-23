@@ -5,7 +5,7 @@ const Champion = require('./champion')
 
 const schema = buildSchema(`
   type Query {
-    getChampion(name: String!): Champion
+    getChamp: Champion
   }
 
   type Mutation {
@@ -24,14 +24,9 @@ const champions = [
 ]
 
 const rootValue = {
-  getChampion: ({ name }) => {
-    return champions.find(x => name === name)
-  },
-
   updateChampion: ({ name, attackDamage }) => {
     const champ = champions.find(x => name === name)
     champ.attackDamage = attackDamage
-    return champions[0]
   }
 }
 
