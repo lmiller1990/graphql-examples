@@ -226,3 +226,42 @@ const rootValue = {
 ```
 
 Any variables the query includes are passed as the first argument to the endpoint. We use ES6 destructuring to get the `name`, and find the correct champion from our array.
+
+### Mutations
+
+So far we have just been fetching data. Let's see how to update a record - or, in GraphQL, mutate a record. Let's see the updated client side request first:
+
+```
+axios.post('http://localhost:4000/graphql', {
+  mutation: `mutation UpdateChamp($name: String!, $attackDamage: Int!) {
+    updateChampion($name: name, $attackDamage: attackDamage)
+      name
+    }
+  }`,
+  variables: {
+    name: 'Ashe',
+    attackDamage: 500
+  }
+})
+```
+
+We are now passing a `mutation` instead of a `query`. The rest remains the same. Now the server:
+
+```
+const schema = buildSchema(`
+  /* ... */
+  type Mutation {
+    updateChampion(name: String!, attackDamage: Int!): Champion
+  }
+`)
+
+const rootValue = {
+  /* */
+  updateChampion: ({ name, attackDamage }) => {
+    const champ = champions.find(x => name === name)
+    champ.attackDamage = attackDamage
+
+    return champ
+  }
+}
+```
